@@ -1,1 +1,6 @@
-/* Your styles goes here. */
+.app {
+  display: flex; /* Use flexbox to align columns */
+  gap: 16px; /* Space between columns */
+  padding: 16px; /* Optional padding around the app */
+  overflow-x: auto; /* Optional: allow horizontal scrolling if columns overflow */
+}

@@ -1,0 +1,37 @@
+.note {
+  background-image: url('./notefin-png.png');
+  background-size:auto;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 100px 40px 30px 30px;
+  height: 390px;
+  resize: none;
+  box-sizing: border-box;
+}
+
+.text-area {
+  margin-top: -30px;
+  width: 100%;
+  padding: 10px 0 10px 0;
+  height: 300px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 16px;
+  resize: none;
+  color: #333;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+
+.note input {
+  border: none; /* No border for input */
+  outline: none; /* Remove outline when focused */
+  width: 100%; /* Full width */
+  padding: 4px; /* Padding for the input */
+}
+
+.note input:focus {
+  box-shadow: inset 0 0 5px rgba(0, 0, 255, 0.5); /* Optional: highlight input on focus */
+}
