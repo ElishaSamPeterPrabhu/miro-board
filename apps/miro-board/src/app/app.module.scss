@@ -1,6 +1,31 @@
 .app {
-  display: flex; /* Use flexbox to align columns */
-  gap: 16px; /* Space between columns */
-  padding: 16px; /* Optional padding around the app */
-  overflow-x: auto; /* Optional: allow horizontal scrolling if columns overflow */
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.exportButton, .importButton {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.exportButton:hover, .importButton:hover {
+  background-color: #45a049;
+}
+
+.importInput {
+  display: none;
+}
+
+.importButton {
+  cursor: pointer;
+  background-color: rgb(5, 114, 114);
 }

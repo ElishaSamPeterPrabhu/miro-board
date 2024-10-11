@@ -1,42 +1,89 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const app = express();
+const http = require('http');
+const socketIo = require('socket.io');
 
-app.use(cors());
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
+  },
+});
+
+app.use(cors({ origin: "*" }));
 app.use(bodyParser.json());
 
-let notes = {}; // Store notes in memory, or use a database for persistence
+let notes = {};
 
-// Get notes for a specific column
+app.get('/notes', (req, res) => {
+  const allNotes = Object.entries(notes).flatMap(([columnId, notesArray]) =>
+    notesArray.map((note) => ({ ...note, columnId }))
+  );
+  res.json(allNotes);
+});
+
 app.get('/notes/:columnId', (req, res) => {
   const { columnId } = req.params;
   res.json(notes[columnId] || []);
 });
 
-// Add a note to a specific column
 app.post('/notes/:columnId', (req, res) => {
   const { columnId } = req.params;
   const note = req.body;
 
+  const newNote = {
+    ...note,
+    id: `${Date.now()}`,
+  };
+console.log("server",newNote);
   if (!notes[columnId]) notes[columnId] = [];
-  notes[columnId].push(note);
+  notes[columnId].push(newNote);
 
-  res.json(note);
+  res.json(newNote);
 });
 
-// Update a specific note
 app.put('/notes/:columnId/:noteId', (req, res) => {
   const { columnId, noteId } = req.params;
   const updatedNote = req.body;
-
   notes[columnId] = notes[columnId].map((note) =>
     note.id === noteId ? { ...note, text: updatedNote.text } : note
   );
-
   res.json(updatedNote);
 });
 
-app.listen(5000, () => {
+app.delete('/notes/:columnId/:noteId', (req, res) => {
+  const { columnId, noteId } = req.params;
+  if (notes[columnId]) {
+    notes[columnId] = notes[columnId].filter(note => note.id !== noteId);
+  }
+  res.sendStatus(204);
+});
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('noteAdded', (note) => {
+    io.emit('noteAdded', note);
+  });
+
+  socket.on('noteUpdated', (updatedNote) => {
+    io.emit('noteUpdated', updatedNote);
+  });
+
+  socket.on('noteDeleted', (deletedNote) => {
+    io.emit('noteDeleted', deletedNote);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+server.listen(5000, () => {
   console.log('Server running on http://localhost:5000');
 });

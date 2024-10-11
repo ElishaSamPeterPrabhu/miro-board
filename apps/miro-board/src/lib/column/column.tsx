@@ -3,39 +3,39 @@ import Note from '../note/note';
 import './column.module.scss';
 import styles from './column.module.scss';
 
-interface ColumnProps {
-  title?: string;
+type NoteType = {
+  id: string;
+  text: string;
+};
+
+type ColumnProps = {
+  title: string;
+  notes: NoteType[];
   onAddNote: () => void;
-  notes: { id: string; text: string }[];
-  onUpdateNote: (id: string, text: string) => void;
-}
+  onDeleteNote: (noteId: string) => void;
+  onUpdateNote: (noteId: string, text: string) => void;
+};
 
-const Column: React.FC<ColumnProps> = ({ title = 'Column', onAddNote, notes, onUpdateNote }) => {
-  const [columnTitle, setColumnTitle] = useState(title);
-
+const Column: React.FC<ColumnProps> = ({ title, notes, onAddNote, onDeleteNote, onUpdateNote }) => {
   return (
-<div className={styles.column}>
-  <input
-    className={styles['column-title']}
-    value={columnTitle}
-    onChange={(e) => setColumnTitle(e.target.value)}
-    placeholder="Column Title"
-  />
-  <button className={styles['add-note-btn']} onClick={onAddNote}>
-    +
-  </button>
-  <div className={styles.notes}>
-    {notes.map((note) => (
-      <Note
-        key={note.id}
-        id={note.id}
-        text={note.text}
-        onTextChange={(newText) => onUpdateNote(note.id, newText)}
-      />
-    ))}
-  </div>
-</div>
-
+    <div className={styles['column']}>
+      <h2>{title}</h2>
+      <button onClick={onAddNote} className={styles['add-note-button']}>
+        + Add Note
+      </button>
+      <div className={styles['notes']}>
+        {notes.map((note) => (
+          console.log(note,notes),
+          <Note
+            key={note.id}
+            id={note.id}
+            text={note.text}
+            onTextChange={(text) => onUpdateNote(note.id, text)}
+            onDelete={() => onDeleteNote(note.id)}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
